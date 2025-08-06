@@ -1,0 +1,29 @@
+# Node modules (always ignore this - it's heavy and can be reinstalled with package.json)
+node_modules/
+
+# Environment variables (contains secrets like DB credentials, API keys, etc.)
+.env
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional: Ignore test coverage reports
+coverage/
+
+# Optional: Ignore build or dist folders if using transpilers like Babel or TypeScript
+dist/
+build/
+
+# Optional: Ignore IDE settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
