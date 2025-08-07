@@ -66,53 +66,54 @@ const Register = async (req, res, next) => {
 //   // 
 // }
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  // const { email, password } = req.body;
 
-  // 1. Input validation
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "Email and password are required",
-    });
-  }
+  // // 1. Input validation
+  // if (!email || !password) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Email and password are required",
+  //   });
+  // }
 
-  try {
-    // 2. Find user by email
-    const user = await User.findOne({ email });
+  // try {
+  //   // 2. Find user by email
+  //   const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+  //   if (!user) {
+  //     return res.status(404).json({
+  //       success: false,
+  //       message: "User not found",
+  //     });
+  //   }
 
-    // 3. Compare plain passwords
-    if (user.password !== password) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid password",
-      });
-    }
+  //   // 3. Compare plain passwords
+  //   if (user.password !== password) {
+  //     return res.status(401).json({
+  //       success: false,
+  //       message: "Invalid password",
+  //     });
+  //   }
 
-    // 4. Successful login
-    return res.status(200).json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-      },
-    });
+  //   // 4. Successful login
+  //   return res.status(200).json({
+  //     success: true,
+  //     message: "Login successful",
+  //     user: {
+  //       id: user._id,
+  //       name: user.name,
+  //       email: user.email,
+  //       phoneNumber: user.phoneNumber,
+  //     },
+  //   });
 
-  } catch (e) {
-    return res.status(500).json({
-      success: false,
-      message: e.message,
-    });
-  }
+  // } catch (e) {
+  //   return res.status(500).json({
+  //     success: false,
+  //     message: e.message,
+  //   });
+  // }
+  return res.send("welcome to Himvedaa login page");
 };
 
 
