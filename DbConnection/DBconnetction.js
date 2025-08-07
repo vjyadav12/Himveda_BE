@@ -4,7 +4,8 @@ const DbConnection = async()=>{
     await mongoose.connect(DB_URL).then(()=>{
         console.log("DB connected SuccessFully")
     }).catch(()=>{
-        console.log("fail to establish the database connection")
+
+        console.log("fail to establish the database connectionn")
     })
 }
 
