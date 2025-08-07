@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 userRouter.get("/",Home)
 userRouter.post("/register",Register)
-userRouter.post("/login",loginUser)
+userRouter.get("/login",loginUser)
 
 
 
