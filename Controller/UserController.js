@@ -1,5 +1,6 @@
 
 import User from '../DBSchema/UserSchema.js'
+import bcrypt from 'bcrypt'
 
 const Home = (req, res, next) => {
   console.log("welcome to home page Himvedaa");
@@ -27,8 +28,14 @@ const Register = async (req, res, next) => {
       });
     }
 
+    // here we are hashing the password okay.
+    const HashPassword = await bcrypt.hash(password,12) 
+
+    // console.log("hash",HashPassword)
+
+    // here we are insert the haspassword to password.
     const user = await User.create({
-      name,email,phoneNumber,password
+      name,email,phoneNumber,password:HashPassword
     })
 
     if(!user){
@@ -88,23 +95,27 @@ const loginUser = async (req, res) => {
     }
 
     // 3. Compare plain passwords
-    if (user.password !== password) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid password",
-      });
+    // if (user.password !== password) {
+    //   return res.status(401).json({
+    //     success: false,
+    //     message: "Invalid password",
+    //   });
+    // }
+
+    if(!(await bcrypt.compare(password,user.password))){
+      return res.status(400).json({
+        success:false,
+        message:"Both email and password is incorrect"
+      })
     }
+
+    user.password = undefined;
 
     // 4. Successful login
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-      },
+      user
     });
 
   } catch (e) {
