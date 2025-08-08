@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const DB_URL = "mongodb+srv://infotechgautam544:4Ht8HbUVkNYlyWw7@cluster0.ltbykur.mongodb.net/" 
+const DB_URL = process.env.MONGODB_URI;
 const DbConnection = async()=>{
     await mongoose.connect(DB_URL).then(()=>{   
         console.log("DB connected SuccessFully")
