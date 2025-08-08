@@ -61,19 +61,6 @@ const Register = async (req, res, next) => {
   }
 };
 
-// const Login = async(req,res,next)=>{
-//   const{email,password}= req.body;
-
-//   // if both the fields is not coming.
-//   if(!email || !password){
-//     return res.status(400).json({
-//       success:"false",
-//       message:"Both Email and password is required to login"
-//     })
-//   }
-
-//   //
-// }
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -96,14 +83,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 3. Compare plain passwords
-    // if (user.password !== password) {
-    //   return res.status(401).json({
-    //     success: false,
-    //     message: "Invalid password",
-    //   });
-    // }
-
+    // 3. Compare password
     if (!(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({
         success: false,
@@ -111,19 +91,23 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // here you can set the expiredate of this token as well.
-    const token = await jwt.sign({ _id: user._id }, "Vijay@123");
-    console.log("here is your tokenn sir", token);
+    // 4. Create token
+    const token = jwt.sign({ id: user._id }, "Vijay@123", { expiresIn: "7d" });
 
-    // here  we are setting the cookie
+    // Debug log for token
+    console.log("Here is your token (cookie value):", token);
+
+    // 5. Send token in cookie
     res.cookie("tokennn", token, {
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
       httpOnly: true,
+      secure: false, // true if using HTTPS
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     user.password = undefined;
 
-    // 4. Successful login
+    // 6. Successful login
     return res.status(200).json({
       success: true,
       message: "Login successful",
@@ -138,27 +122,28 @@ const loginUser = async (req, res) => {
 };
 
 // user Profile
-const Profile = async (req, res, next) => {
+const Profile = async (req, res) => {
   try {
-    const user = res.user;
+    const user = req.user; // ✅ comes from middleware
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Please Login Sir",
+        message: "Please login first",
       });
     }
 
     user.password = undefined;
 
     return res.status(200).json({
+      success: true,
       message: "User profile",
       user,
     });
   } catch (e) {
     return res.status(400).json({
       success: false,
-      message: ("Fail to fetch the profile data", e.message),
+      message: `Fail to fetch the profile data: ${e.message}`,
     });
   }
 };

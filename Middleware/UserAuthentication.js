@@ -1,27 +1,43 @@
 import jwt from "jsonwebtoken";
 import User from "../DBSchema/UserSchema.js";
 
+const UserAuthentication = async (req, res, next) => {
+  try {
+    const { tokennn } = req.cookies;
 
-const UserAuthentication = async(req,res,next)=>{
-    const {tokennn} = req.cookies;
+    console.log(tokennn)
 
-    const user_id = await jwt.verify(tokennn,"Vijay@123");
-    console.log(user_id._id)
-    const ID =user_id._id;
-
-    const user = User.findOne({ID});
-    if(!user){
-        return res.status(400).json({
-            success:false,
-            message:"Token is expire"
-        })
+    if (!tokennn) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided",
+      });
     }
 
-    res.user = user;
-    next()
+    // Verify token
+    const decoded = jwt.verify(tokennn, "Vijay@123");
+    console.log(decoded)
 
-    // next 
+    // Find user by decoded ID
+    const user = await User.findById(decoded.id); // Use decoded.id not _id if that's what you stored
 
-}
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token or user not found",
+      });
+    }
+
+    // Attach user to request so next() has access
+    req.user = user;
+
+    next();
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: "Token is expired or invalid",
+    });
+  }
+};
 
 export default UserAuthentication;
