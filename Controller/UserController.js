@@ -1,6 +1,6 @@
-
-import User from '../DBSchema/UserSchema.js'
-import bcrypt from 'bcrypt'
+import User from "../DBSchema/UserSchema.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const Home = (req, res, next) => {
   console.log("welcome to home page Himvedaa");
@@ -29,20 +29,23 @@ const Register = async (req, res, next) => {
     }
 
     // here we are hashing the password okay.
-    const HashPassword = await bcrypt.hash(password,12) 
+    const HashPassword = await bcrypt.hash(password, 12);
 
     // console.log("hash",HashPassword)
 
     // here we are insert the haspassword to password.
     const user = await User.create({
-      name,email,phoneNumber,password:HashPassword
-    })
+      name,
+      email,
+      phoneNumber,
+      password: HashPassword,
+    });
 
-    if(!user){
+    if (!user) {
       return res.status(400).json({
-        success:false,
-        message:"User Registration fail"
-      })
+        success: false,
+        message: "User Registration fail",
+      });
     }
 
     // Continue with user creation, hashing, etc.
@@ -50,7 +53,6 @@ const Register = async (req, res, next) => {
       success: true,
       message: "User registered successfully",
     });
-
   } catch (e) {
     return res.status(500).json({
       success: false,
@@ -70,7 +72,7 @@ const Register = async (req, res, next) => {
 //     })
 //   }
 
-//   // 
+//   //
 // }
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -102,12 +104,22 @@ const loginUser = async (req, res) => {
     //   });
     // }
 
-    if(!(await bcrypt.compare(password,user.password))){
+    if (!(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({
-        success:false,
-        message:"Both email and password is incorrect"
-      })
+        success: false,
+        message: "Both email and password is incorrect",
+      });
     }
+
+    // here you can set the expiredate of this token as well.
+    const token = await jwt.sign({ _id: user._id }, "Vijay@123");
+    console.log("here is your tokenn sir", token);
+
+    // here  we are setting the cookie
+    res.cookie("tokennn", token, {
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+      httpOnly: true,
+    });
 
     user.password = undefined;
 
@@ -115,9 +127,8 @@ const loginUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      user
+      user,
     });
-
   } catch (e) {
     return res.status(500).json({
       success: false,
@@ -126,5 +137,30 @@ const loginUser = async (req, res) => {
   }
 };
 
+// user Profile
+const Profile = async (req, res, next) => {
+  try {
+    const user = res.user;
 
-export { Home,Register,loginUser };
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Please Login Sir",
+      });
+    }
+
+    user.password = undefined;
+
+    return res.status(200).json({
+      message: "User profile",
+      user,
+    });
+  } catch (e) {
+    return res.status(400).json({
+      success: false,
+      message: ("Fail to fetch the profile data", e.message),
+    });
+  }
+};
+
+export { Home, Register, loginUser, Profile };
