@@ -5,6 +5,7 @@ import userRouter from './Routers/UserRouter.js';
 import DbConnection from './DbConnection/DBconnetction.js';
 import cors from 'cors'
 import cookieParser from "cookie-parser";
+import productRouter from './Routers/productsROuter.js';
 
 const app = express()
 
@@ -23,6 +24,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(morgan('dev'));
 app.use("/",userRouter);
+app.use("/Products",productRouter);
+
 
 
 export default app;

@@ -148,4 +148,20 @@ const Profile = async (req, res) => {
   }
 };
 
-export { Home, Register, loginUser, Profile };
+
+const LogOut = async (req, res, next) => {
+  console.log("Welcome brother in Logout page ");
+
+  res.cookie("tokennn", null, {
+    secure: true,
+    maxAge: 0,
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "User logged Out successfully",
+  });
+};
+
+export { Home, Register, loginUser, Profile, LogOut }; 
