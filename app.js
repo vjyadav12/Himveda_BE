@@ -11,12 +11,12 @@ const app = express()
 
 DbConnection()
 
-// app.use(cors({
-//   origin: "https://himveda-be-38v4.vercel.app", // frontend domain
-//   credentials: true
-// }));
+app.use(cors({
+  origin: "https://himveda-be-38v4.vercel.app", // frontend domain
+  credentials: true
+}));
 
- app.use(cors());
+//  app.use(cors());
 
 
 app.use(cookieParser());
